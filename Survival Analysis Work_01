@@ -8,13 +8,11 @@
 
 \title{Survival Analysis Homework 1}
 \author{Luis Treviño}
-\date{June 6, 2021}
+\date{June 7, 2021}
 
 \begin{document}
 
 \maketitle
-
-Note: This document was created using LaTex software. 
 
          \section*{1. Problem 2.2, Page 17}
 We are given a life table for the total population of 100,000 live births in the United States from 1959 to 1961. \\
@@ -25,15 +23,10 @@ The computation of the estimated survivorship function S(t), the probability den
 
 Note: $l_t$ here refers to the total number of living people beginning at the interval of time, while $d_t$ refers to the number dying in the corresponding time interval. \\
 
-From these computations we can then plot the functions in order to better visualize the trends in the data:
-
-\includegraphics[scale = .5]{survivorship.png}
-\includegraphics[scale = .5]{pdf.png}
-\includegraphics[scale = .5]{hazard.png}
-
-
-
-
+From these computations we can then plot the functions:
+\includegraphics[scale = .41]{survivorship.png}
+\includegraphics[scale = .41]{pdf.png}
+\includegraphics[scale = .41]{hazard.png}
 
     \section*{2. Problem 2.3, Page 17}
 We are given:
@@ -44,13 +37,13 @@ We are to show how it can be derived from:
 \begin{equation}\tag{2.1.6}
     	h(t) = \lim_{\Delta t\to0} \frac{\text{an individual fails in the time interval} (t,t+\Delta t) \text{given the individual has survived to t}}{\Delta t} 
 \end{equation}
-by using the basic definitions of conditional probability.
+by using the basic definitions of conditional probability. \\
 
 Furthermore, we will begin by expressing (2.1.6) in terms of conditional probablity:
 \begin{equation}
 h(t) =  \lim_{\Delta t\to0} \frac{P(t < T < t +\Delta t | T > t)}{\Delta t}=\lim_{\Delta t\to0} \frac{P(t < T < t +\Delta t)}{\Delta t P(T>t)}
 \end{equation}
-Next we express f(t) and S(t) by their definitions in terms of conditional probablity:
+Next we express f(t) and S(t) by their definitions in terms of conditional probability:
 \begin{equation}
 f(t) =  \lim_{\Delta t\to0} \frac{P(t < T < t +\Delta t)}{\Delta t} 
 \end{equation}
@@ -59,13 +52,11 @@ f(t) =  \lim_{\Delta t\to0} \frac{P(t < T < t +\Delta t)}{\Delta t}
 S(t) =  P(T>t)
 \end{equation}
 
-
-
-Refering back to (1), we can rewrite the equation as:
+Refering back to (1) and using (2) and (3), we can rewrite the equation as:
 \begin{equation}
 h(t) = \lim_{\Delta t\to0} \frac{P(t < T < t +\Delta t)}{\Delta t P(T>t)}=f(t) \frac{1}{S(t)}=\frac{f(t)}{S(t)}
 \end{equation}
-Therefore we can clearly see that the hazard function defined in terms of a ratio of the probablity density function and the survivor function (2.2.1) can be derived from the definition given to it in (2.1.6). QED
+Therefore we can clearly see that the hazard function defined in terms of a ratio of the probability density function and the survivor function (2.2.1) can be derived from the definition given to it in (2.1.6). QED
 
 
             \section*{3. Problem 2.5, Page 18}
@@ -78,10 +69,11 @@ We are given the following survivorship function:
 \begin{equation*}
     S(t) = 1-F(t) \equiv F(t) = 1-S(t)
 \end{equation*}
-As f(t) would be the derivative of F(t) here, we can simply rewrite this relationship as:
+As f(t) would be the derivative of F(t), we can simply rewrite this relationship as:
 \begin{equation*}
     f(t)= \frac{d(1-S(t))}{d(t)} = \frac{-dS(t)}{d(t)} = \frac{-d(exp(-t^y))}{d(t)}=-yt^{y-1}exp(-t^y)
 \end{equation*}
+
 Therefore the pdf here would be $f(t) = -yt^{y-1}exp(-t^y)$. \\
 
 (ii.) We can similarly obtain the hazard function h(t) with another simple relationship:
@@ -97,12 +89,31 @@ Thus the hazard function is clearly $h(t) = -yt^{y-1}$ . \\
 \end{equation*}
 The cummulative hazard function may be expressed as $H(t) = t^y$.
 
+        \section*{4. Problem 4.3, Page 104}
+        
+(a) The following graph was constructed using SAS software with the data provided in table 3.1: \\
 
-          \section*{4. Problem 4.3, Page 104}
-\begin{figure}
-    \includegraphics[scale = .7]{SurvivalPlot1.png}
-\end{figure}
+\includegraphics[scale = .7]{SurvivalPlot1.png} \\
 
+(b) For computing the variance of the survival time estimator $\hat{S}(t)$ for every uncensored observation we will use the following formula:
+
+\begin{equation*}
+    Var(\hat{S}(t)) \approx [\hat{S}(t)]^2 \sum_r \frac{1}{(n-r)(n-r+1)}
+\end{equation*}
+
+Below you can see the computation performed on all the uncensored observations where the variance for each is shown in the last column:
+
+\includegraphics[scale = 1]{3.1_Variance.png} \\
+\\
+
+(c) Median Survival Time \\
+Finally, the median survival time for the two treatment groups, one for treatment 1 (TRT1) and the other for treatment 2 (TRT2), may be observed below:
+\includegraphics[]{TRT1_median.png}
+\includegraphics[]{TRT2_median.png}
+
+The whole group where our sample size was n=30 was simply split into two groups, $n_1=11$ and $n_2=19$, according to treatment group they belonged to as the original life table showed. \\
+
+The median survival time clearly proves to be TRT1 = 16.9 and for TRT2 = 12.2.
 
 
             \section*{5. Gompertz Distribution}
@@ -124,9 +135,7 @@ By letting $\theta = e^{\lambda}, \alpha = \gamma: $
      h(t)=\frac{f(t)}{S(t)}=\frac{e^{\lambda} e^{\gamma t}exp[\frac{e^\lambda}{\gamma}(1-e^{\gamma t})]}{exp[\frac{e^\lambda}{\gamma}(1-e^{\gamma t})]}=e^{\lambda} e^{\gamma t}=exp[\lambda + \gamma t]
 \end{equation*}
 
-Therefore our hazard function here would clearly be \textbf {h(t) = exp[\lambda + \gamma t]}
-
-
+Therefore our hazard function here would clearly be ${h(t) = exp[\lambda + \gamma t]}$
 
             \section*{6. Poisson random variable}
 Let X be a Poisson random variable with pmf:
@@ -135,24 +144,24 @@ Let X be a Poisson random variable with pmf:
 \end{equation*}
 In showing that the hazard function is monotone increasing we begin with the relationship:
 
-\begin{equation}
+\begin{equation} \tag{i.}
     h(t_j) = P(T=t_j | T \geq t_j) = \frac{p(t_j)}{S(t_j)}=\frac{p(t_j)}{1-F(j)}
 \end{equation}
 
-\begin{equation}
+\begin{equation}\tag{ii.}
     F(j)=P(x \leq j) = \sum_{i=0}^je^{-\lambda}\frac{\lambda^i}{i!}
 \end{equation}
-From (1):
-\begin{equation}
+From (i.):
+\begin{equation}\tag{iii.}
     h(j) = \frac{e^{-\lambda}\frac{\lambda^j}{j!}}{ \sum_{i=0}^j e^{-\lambda}\frac{\lambda^i}{i!}}=\frac{\lambda^j}{j!\sum_{i=0}^j \frac{\lambda^i}{i!}}
 \end{equation}
 Moreover:
-\begin{equation}
+\begin{equation}\tag{iv.}
     h(j+1)-h(j) \equiv \frac{\lambda^{j+1}}{(j+1)!\sum_{i=0}^{j+1} \frac{\lambda^i}{i!}} - \frac{\lambda^j}{j!\sum_{i=0}^j \frac{\lambda^i}{i!}}=\frac{\lambda^j}{j!\sum_{i=0}^j \frac{\lambda^i}{i!}}[\frac{\lambda}{(j+1)\frac{\lambda^{j+1}}{(j+1)!}}-1]
 \end{equation}
 
 $h(j+1)-h(j)$ can ultimately be expressed as:
-\begin{equation}
+\begin{equation}\tag{v.}
     \frac{j!-\lambda^j}{j! \sum_{i=0}^j \frac{\lambda^i}{i!}} > 0
 \end{equation}
 
@@ -160,24 +169,54 @@ Therefore: $h(j+1) \geq h(j) \forall$ j; the hazard function is monotone increas
 
 
             \section*{7. Random variable with memoryless property}
-A random variable X is said to have a memoryless property if for s, t> 0, P(X >
-s + t|X > s) is independent of s.
+A random variable X is said to have a memoryless property if for s, $t> 0, P(X >
+s + t|X > s)$ is independent of s.
 
 a) Show that the exponential distribution has the memoryless property.\\
+If we first define an exponential distributin as:
+\begin{equation}
+    exp(\beta)=f(x) = \beta exp(-\beta x)
+\end{equation}
+ Then we are trying to see if this is a true statement:
+ \begin{equation}
+   P(X > s + t|X > s) = P(x \geq t)
+\end{equation}
+ 
+ We can show that:
+ \begin{equation}
+    P(x \geq t)=1-F(x) = exp^{-\beta x}
+\end{equation}
+Also:
+ \begin{equation}
+   P(X > s + t|X > s) = P(x \geq t) \equiv  \frac{P(X > s + t)}{P(x \geq s)}= \frac{exp(-\beta (s+t))}{exp(-\beta s)} = exp(-\beta t)
+\end{equation}
+Finally, taking these parts together we can see that:
+ \begin{equation}
+   P(X > s + t|X > s) = P(x \geq t)
+\end{equation}
+ Is indeed true and the exponential distribution proves to have the memoryless property.
  
 b) Show that the geometric distribution has the memoryless property.
 
+Now if we define a geometric distribution as:
+\begin{equation}
+    geometric(p)=f(y) = p(1-p)^{x-1}
+\end{equation}
+Then we can clearly see that:
+\begin{equation}
+    P(Y \geq y)=1-F(y)=(1-p)^y
+\end{equation}
 
+Moreover:
+\begin{equation}
+    P(Y > s + t|Y > s) = \frac{P(Y > s + t)}{P(Y \geq s)} = \frac{(1-p)^{s+t}}{(1-p)^s}=(1-p)^t
+\end{equation}
 
-\section*{Extra Credit}
- Consider a continuous lifetime distribution with survival function S(t), hazard functionh(t), cumulative hazard function H(t), and mean residual life function m(t). Consider the
-following properties: (a) h(t) is nondecreasing for t ≥ 0. Distributions with this property
-are often said to have the increasing failure rate (IFR) property. (b) m(t) is a decreasing
-function for t ≥ 0. This is called the decreasing mean residual life property. (c) m(t) ≤ m(0)
-for all t ≥ 0. Distributions with this property are often said to have the ”new better than
-used” property. Show that (a) ⇒ (b) ⇒ (c).
-
-
-
+Therefore, it is clear that:
+\begin{equation}
+P(Y > s + t|Y > s) = P(Y >t)
+\end{equation}
+ 
+ would be a true statement and thus the geometric distribution proves to also have the memoryless property.
 
 \end{document}
