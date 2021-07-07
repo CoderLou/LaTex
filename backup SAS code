@@ -1,0 +1,216 @@
+DATA table3_9;
+INFILE 'Z:\T3d9(1).prn' missover;
+Input ID T CENS AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN;
+run; 
+
+proc print data = table3_9;
+run;
+
+
+* PART A - Creating something like Table 11.7 ;
+
+PROC PHREG DATA = table3_9;
+Model T*CENS(0)=AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN / include=4 selection=f;
+RUN;
+
+
+PROC PHREG DATA = table3_9;
+Model T*CENS(0)=AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN / include=4 selection=b;
+RUN;
+
+
+PROC PHREG DATA = table3_9 outest=wcov covout;
+Model T*CENS(0)=AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN / include=4 selection=s;
+RUN;
+
+
+PROC PHREG DATA = table3_9;
+Model T*CENS(0)=AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN / include=4 selection=score best=3;
+RUN;
+
+PROC PRINT DATA = WCOV;
+RUN;
+
+
+DATA wcov;
+	Set wcov;
+	if _type_='cov';  
+	keep AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN;
+RUN;
+
+proc print data = wcov;
+run;
+
+
+
+PROC PHREG DATA = table3_9;
+Model T*CENS(0)=AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN / rl ties=efron;
+b1mb2: test
+;
+
+/* PART B - Kalbfleisch-Prentice estimate of survivorship function*/
+
+*Kalbfleisch-Prentice estimate of S(t) ;
+PROC PHREG data=table3_9 noprint;
+Model T*CENS(0)=AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN;
+Baseline out=base1 survival=survival l=lowb u=uppb/method=pl;
+run;
+
+proc print data=base1;
+var T survival lowb uppb;
+run;
+
+proc print data = base1;
+run;
+
+
+
+Data baseA;
+set base1;
+Cens =1;
+run;
+
+proc print data = basea;
+run;
+
+
+
+
+
+ods graphics on;
+proc phreg data=base1 plot(overlay)=survival;
+model T*Cens(0)=;
+baseline covariates=regimes out=_null_;
+run;
+
+
+
+
+
+*Breslow estimate of S(t) ;
+PROC PHREG data=table3_9 noprint;
+Model T*CENS(0)=AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN;
+Baseline out=base1 survival=survival l=lowb u=uppb/method=ch;
+run;
+
+proc print data=base1;
+var T survival lowb uppb;
+run;
+
+
+
+
+
+symbol1 v=dot i=join h=.5;
+symbol2 v=star i=j h=.5;
+symbol3 v=diamond j=j h=.4;
+/* Define legend options */                                                                                                             
+legend1 position=(top right inside)  mode=protect across=1  ;                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                   
+proc gplot data=base1;
+plot (survival lowb uppb)*t /overlay legend=legend1 ;
+format high comma8.0; 
+run;
+
+proc phreg data=table3_9 noprint;
+Model T*CENS(0)=AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN;
+baseline out=base1 survival=survival l=lowb u=uppb /method=ch;
+run;
+
+
+title 'Breslow estimate of the survival function and its Lower and Upper bands';
+proc print data=base1;
+var t survival lowb uppb; 
+run;
+
+proc gplot data=base1;
+plot (survival lowb uppb)*t /overlay legend=legend1; 
+run;
+QUIT;
+
+/* PART C */
+
+
+PROC PHREG DATA = table3_9 noprint;
+Model T*CENS(0)=AGE SEX BMI SBP DBP SMOKE HDL LDL LTG ALBU DM HTN;
+output out=out1 logsurv=ls resdev=rdev wtressch=rage r2 R3;
+run;
+
+DATA out1;
+set out1;
+rcs=-ls;
+run;
+
+proc print data = out1;
+run;
+
+proc lifetest data=out1 notable outs=ws;
+time rcs*CENS(0);
+run;
+
+DATA WS;
+set WS;
+mls=-log(survival);
+run;
+
+
+
+title 'Cox-Snell residuals and mls';
+
+proc print data = ws;
+VAR rcs mls;
+run;
+
+
+title 'Deviance residuals (rdev) and weighted schoenfeld residuals' ;
+proc print data =out1;
+run;
+
+
+
+proc gplot data=WS;
+plot rcs*mls /overlay legend=legend1; 
+run;
+quit;
+
+
+/*********************************************************************************************************************************************/
+
+proc gplot data=out1;
+plot RAGE*AGE /overlay legend=legend1; 
+run;
+QUIT;
+
+proc gplot data=out1;
+plot R2*SEX /overlay legend=legend1; 
+run;
+QUIT;
+
+proc gplot data=out1;
+plot R3*BMI /overlay legend=legend1; 
+run;
+QUIT;
+
+
+
+proc gplot data=out1;
+	plot RCS*ls; 
+run;
+
+
+
+symbol1 interpol=rcclm95
+       value=circle
+       cv=darkred
+       ci=black
+       co=blue
+       width=2;
+   plot height*weight / haxis=45 to 155 by 10
+                        vaxis=48 to 78 by 6
+                        hminor=1
+                        regeqn;
+run;
+quit;
+
+
+
